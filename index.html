@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jessie Math - 速率大挑戰進階</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* --- 全局設定 --- */
+        :root {
+            --primary-color: #F4D03F; /* Jessie Math 品牌黃 */
+            --text-color: #333333;    /* 品牌深灰/黑 */
+            --accent-color: #E74C3C;
+            --blue-accent: #5DADE2;   /* 截圖中的藍色 */
+            --bg-color: #f9f9f9;
+            --header-height: 80px;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- Header / Hero 區域 (依截圖修改) --- */
+        header {
+            background-color: #fff;
+            height: var(--header-height);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-circle {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #fff; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            overflow: hidden;
+        }
+
+        .logo-circle img {
+            width: 85%; 
+            height: auto;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-color);
+            letter-spacing: 0.5px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* 一般導航按鈕 */
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: #666;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 20px;
+            transition: background 0.3s;
+        }
+        .nav-item:hover {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        /* 特殊藍色外框按鈕 (截圖樣式) */
+        .nav-btn-outline {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: #4a69bd; /* 類似截圖的藍紫色 */
+            font-size: 15px;
+            font-weight: 700;
+            padding: 6px 15px;
+            border: 1.5px solid #4a69bd;
+            border-radius: 50px;
+            transition: all 0.3s;
+            background: white;
+        }
+        .nav-btn-outline:hover {
+            background-color: #4a69bd;
+            color: white;
+            box-shadow: 0 4px 10px rgba(74, 105, 189, 0.3);
+        }
+
+        /* --- 遊戲主容器 --- */
+        .game-container {
+            flex: 1;
+            max-width: 800px;
+            width: 95%;
+            margin: 30px auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            animation: fadeIn 0.4s ease-out;
+            flex: 1;
+        }
+
+        .screen.active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { color: var(--text-color); margin-bottom: 10px; }
+        h2 { color: var(--text-color); }
+        p { color: #666; line-height: 1.6; }
+
+        input[type="text"] {
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 300px;
+            margin: 20px 0;
+            text-align: center;
+            outline: none;
+        }
+        input[type="text"]:focus { border-color: var(--primary-color); }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            box-shadow: 0 4px 0 #d4b10b;
+            margin: 5px;
+            display: inline-block;
+            min-width: 100px;
+        }
+        .btn:active { transform: translateY(4px); box-shadow: 0 0 0 #d4b10b; }
+        
+        .btn.secondary { background-color: #eee; box-shadow: 0 4px 0 #ccc; }
+        .btn.secondary:active { transform: translateY(4px); box-shadow: 0 0 0 #ccc; }
+
+        .btn.danger { background-color: #ffcccc; color: #c0392b; box-shadow: 0 4px 0 #e6b0aa; }
+        .btn.danger:active { transform: translateY(4px); box-shadow: 0 0 0 #e6b0aa; }
+        
+        /* 選擇關卡樣式 */
+        .selection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .select-card {
+            background: #fff;
+            border: 2px solid #eee;
+            border-radius: 15px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .select-card:hover { border-color: var(--primary-color); transform: translateY(-3px); }
+        .select-card.selected {
+            background-color: #fff9db;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(244, 208, 63, 0.3);
+        }
+        .select-card i { font-size: 2em; margin-bottom: 10px; display: block; }
+
+        .difficulty-options {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .diff-btn {
+            padding: 10px 20px;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .diff-btn.selected {
+            background: var(--primary-color);
+            border-color: #d4b10b;
+        }
+
+        /* 遊戲內介面 HUD */
+        .hud-bar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: #34495e;
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #2c3e50;
+        }
+        .hud-item { display: flex; align-items: center; gap: 8px; }
+        .hud-item span { font-size: 1.2em; color: #F4D03F; }
+
+        /* Combo 樣式 */
+        .combo-box {
+            background: #e74c3c;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.9em;
+            display: none; /* 預設隱藏 */
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .combo-box.active { display: block; }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+        /* 情境插圖卡 (Scenario Card) */
+        .scenario-card {
+            width: 100%;
+            height: 140px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: -10px; /* 接合下方文字區 */
+            z-index: 1;
+        }
+        
+        /* 各種場景背景 */
+        .scene-sky { background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%); }
+        .scene-road { background: linear-gradient(135deg, #304352 0%, #d7d2cc 100%); border-bottom: 10px dashed #fff; }
+        .scene-nature { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+        .scene-track { background: linear-gradient(to right, #e67e22, #f1c40f); }
+        .scene-water { background: linear-gradient(180deg, #4facfe 0%, #00f2fe 100%); }
+
+        .scenario-icon {
+            font-size: 5em;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .question-area {
+            background: #fff;
+            border: 2px solid #eee;
+            border-top: none;
+            padding: 20px;
+            border-radius: 0 0 20px 20px;
+            width: 100%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .q-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-color);
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 2;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .option-card {
+            background: white;
+            border: 2px solid #eee;
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #555;
+            transition: 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .option-card:hover { 
+            border-color: var(--primary-color); 
+            background: #fffdf0; 
+            transform: translateY(-2px);
+        }
+
+        /* 結算畫面星星 */
+        .stars-display {
+            font-size: 3em;
+            color: #ddd; /* 未點亮顏色 */
+            margin: 10px 0;
+        }
+        .stars-display span.filled {
+            color: #f1c40f;
+            text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
+            animation: popIn 0.5s forwards;
+        }
+
+        /* 排行榜樣式 */
+        .leaderboard-box {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 500px;
+            border-top: 2px solid #eee;
+            padding-top: 15px;
+        }
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        .leaderboard-table th {
+            text-align: left;
+            padding: 8px;
+            color: #888;
+        }
+        .leaderboard-table td {
+            padding: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .rank-1 { color: #f1c40f; font-weight: bold; }
+        .rank-2 { color: #95a5a6; font-weight: bold; }
+        .rank-3 { color: #d35400; font-weight: bold; }
+
+        .game-btn-group {
+            margin-top: 20px; 
+            width: 100%; 
+            display: flex; 
+            justify-content: center; 
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* RWD Mobile */
+        @media (max-width: 600px) {
+            header { padding: 0 15px; }
+            .brand-name { font-size: 18px; }
+            .nav-item span { display: none; } /* 手機版隱藏文字，只留icon */
+            .nav-btn-outline span { display: inline; } /* 保留重要按鈕文字 */
+            
+            .options-grid { grid-template-columns: 1fr; }
+            .game-container { padding: 20px 15px; margin: 15px auto; width: 95%; }
+            .btn { flex: 1; padding: 12px 10px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <div class="logo-circle">
+                <img src="JESSIEMATH-Q.png" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4762/4762311.png'">
+            </div>
+            <div class="brand-name">Jessie Math</div>
+        </div>
+
+        <nav>
+            <a href="https://jessiemath0703-chu.github.io/website2/" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>首頁</span>
+            </a>
+            <a href="https://jessiemath0703-chu.github.io/Game-Lobby/" class="nav-item">
+                <i class="fas fa-gamepad"></i>
+                <span>遊戲大廳</span>
+            </a>
+            <a href="https://jessiemath0703-chu.github.io/Game-Lobby/#g6-u12" class="nav-btn-outline">
+                <i class="fas fa-chevron-left"></i>
+                <span>六年級速率</span>
+            </a>
+        </nav>
+    </header>
+
+    <div class="game-container">
+        
+        <div id="screen-login" class="screen active">
+            <h1 style="font-size: 2.5em;">🏎️ 速率大挑戰</h1>
+            <p>輸入你的代號，挑戰連擊 Combo！</p>
+            <input type="text" id="player-name" placeholder="請輸入名字 (最多10字)" maxlength="10">
+            <button class="btn" onclick="goToSelection()">下一步</button>
+            
+            <div class="leaderboard-box">
+                <h3>🏆 英雄榜</h3>
+                <table class="leaderboard-table" id="login-leaderboard"></table>
+            </div>
+        </div>
+
+        <div id="screen-selection" class="screen">
+            <h2>選擇修練主題</h2>
+            <div class="selection-grid">
+                <div class="select-card" onclick="selectLevel(1, this)">
+                    <i class="fas fa-rocket" style="color:#e67e22"></i>
+                    <div>Level 1<br>距離</div>
+                </div>
+                <div class="select-card" onclick="selectLevel(2, this)">
+                    <i class="fas fa-stopwatch" style="color:#3498db"></i>
+                    <div>Level 2<br>時間</div>
+                </div>
+                <div class="select-card" onclick="selectLevel(3, this)">
+                    <i class="fas fa-tachometer-alt" style="color:#e74c3c"></i>
+                    <div>Level 3<br>速率</div>
+                </div>
+                <div class="select-card" onclick="selectLevel(4, this)">
+                    <i class="fas fa-running" style="color:#2ecc71"></i>
+                    <div>Level 4<br>追趕</div>
+                </div>
+                <div class="select-card selected" onclick="selectLevel(5, this)">
+                    <i class="fas fa-random" style="color:#9b59b6"></i>
+                    <div>Level 5<br>混合挑戰</div>
+                </div>
+            </div>
+
+            <h2>選擇車速 (難度)</h2>
+            <div class="difficulty-options">
+                <button class="diff-btn" onclick="selectDiff('easy', this)">😊 輕鬆</button>
+                <button class="diff-btn selected" onclick="selectDiff('normal', this)">😐 標準</button>
+                <button class="diff-btn" onclick="selectDiff('hard', this)">🔥 極速</button>
+            </div>
+
+            <div class="game-btn-group">
+                <button class="btn secondary" onclick="switchScreen('screen-login')">返回</button>
+                <button class="btn" onclick="startGame()">開始 GO!</button>
+            </div>
+        </div>
+
+        <div id="screen-game" class="screen">
+            <div class="hud-bar">
+                <div class="hud-item"><i class="fas fa-user"></i> <span id="hud-name">Player</span></div>
+                <div class="hud-item">
+                    <i class="fas fa-star"></i> 
+                    <span id="hud-score">0</span>
+                    <div id="combo-display" class="combo-box">Combo x2!</div>
+                </div>
+                <div class="hud-item"><i class="fas fa-clock"></i> <span id="hud-timer">00:00</span></div>
+            </div>
+
+            <div class="scenario-card" id="scene-bg">
+                <div class="scenario-icon" id="q-emoji">🚀</div>
+            </div>
+
+            <div class="question-area">
+                <div class="q-badge" id="q-title">題目主題</div>
+                <div id="q-text" style="font-size: 1.4em; margin: 15px 0; font-weight: bold; color:#2c3e50;">
+                    題目載入中...
+                </div>
+                
+                <div class="options-grid" id="q-options"></div>
+            </div>
+
+            <div class="game-btn-group">
+                <button class="btn secondary" onclick="backToMenu()">≡ 選關卡</button>
+                <button class="btn secondary" onclick="pauseGame()">暫停</button>
+            </div>
+        </div>
+
+        <div id="screen-result" class="screen">
+            <h1>時間到！</h1>
+            
+            <div class="stars-display" id="result-stars">
+                <span>★</span><span>★</span><span>★</span>
+            </div>
+
+            <h2>得分: <span id="final-score" style="color:var(--accent-color);">0</span></h2>
+            <p id="feedback-msg">評語...</p>
+            
+            <div class="game-btn-group">
+                <button class="btn" onclick="switchScreen('screen-selection')">再玩一次</button>
+                <button class="btn secondary" onclick="window.location.href='https://jessiemath0703-chu.github.io/website2/'">回首頁</button>
+            </div>
+
+            <div class="leaderboard-box">
+                <h3>🏆 本機排行榜</h3>
+                <table class="leaderboard-table" id="result-leaderboard"></table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 遊戲資料 ---
+        let gameState = {
+            name: "Player",
+            score: 0,
+            combo: 0, // 新增 Combo 變數
+            time: 0,
+            timerId: null,
+            level: 5,
+            difficulty: 'normal',
+            isPaused: false,
+            currentQ: null
+        };
+
+        const BASE_TIME = 60; 
+
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function goToSelection() {
+            const name = document.getElementById('player-name').value.trim();
+            if(!name) { alert("請輸入名字！"); return; }
+            gameState.name = name;
+            switchScreen('screen-selection');
+        }
+
+        function selectLevel(lvl, el) {
+            gameState.level = lvl;
+            document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+
+        function selectDiff(diff, el) {
+            gameState.difficulty = diff;
+            document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+
+        function startGame() {
+            gameState.score = 0;
+            gameState.combo = 0; // 重置 Combo
+            updateComboUI();
+
+            if(gameState.difficulty === 'easy') gameState.time = BASE_TIME * 1.5; 
+            else if(gameState.difficulty === 'hard') gameState.time = BASE_TIME * 0.8; 
+            else gameState.time = BASE_TIME;
+
+            document.getElementById('hud-name').textContent = gameState.name;
+            switchScreen('screen-game');
+            generateNextQuestion();
+            startTimer();
+        }
+
+        function backToMenu() {
+            if(confirm("確定要結束目前遊戲，回到主題選單嗎？")) {
+                clearInterval(gameState.timerId);
+                switchScreen('screen-selection');
+            }
+        }
+
+        function startTimer() {
+            if(gameState.timerId) clearInterval(gameState.timerId);
+            updateTimerUI();
+            gameState.timerId = setInterval(() => {
+                if(!gameState.isPaused) {
+                    gameState.time--;
+                    updateTimerUI();
+                    if(gameState.time <= 0) endGame();
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            let m = Math.floor(gameState.time / 60);
+            let s = Math.floor(gameState.time % 60);
+            document.getElementById('hud-timer').textContent = 
+                `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            
+            // 時間快到變紅色
+            if(gameState.time < 10) document.getElementById('hud-timer').style.color = '#e74c3c';
+            else document.getElementById('hud-timer').style.color = 'white';
+        }
+
+        function pauseGame() {
+            gameState.isPaused = !gameState.isPaused;
+            if(gameState.isPaused) alert("遊戲暫停！喝口水，按下確定繼續");
+            gameState.isPaused = false;
+        }
+
+        function updateComboUI() {
+            const box = document.getElementById('combo-display');
+            if (gameState.combo > 1) {
+                box.textContent = `🔥 Combo x${gameState.combo}`;
+                box.classList.add('active');
+                // 重置動畫
+                box.style.animation = 'none';
+                box.offsetHeight; /* trigger reflow */
+                box.style.animation = 'popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            } else {
+                box.classList.remove('active');
+            }
+        }
+
+        // --- 題目產生器 (情境化增強) ---
+        function generateNextQuestion() {
+            let type = gameState.level === 5 ? Math.floor(Math.random()*4)+1 : gameState.level;
+            let q = {};
+            
+            const randItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
+            const rdm = (min, max) => Math.floor(Math.random()*(max-min+1)+min);
+
+            // 定義場景樣式 (Scene Styles)
+            // scene-sky, scene-road, scene-nature, scene-water, scene-track
+            
+            if(type === 1) { // 距離 (Speed * Time)
+                const scenarios = [
+                    { name: "火箭", emoji: "🚀", speed: [500, 900], time: [2, 5], scene: "scene-sky" },
+                    { name: "高鐵", emoji: "🚅", speed: [200, 300], time: [2, 4], scene: "scene-track" },
+                    { name: "獵豹", emoji: "🐆", speed: [60, 110], time: [2, 5], scene: "scene-nature" },
+                    { name: "老鷹", emoji: "🦅", speed: [100, 150], time: [3, 6], scene: "scene-sky" }
+                ];
+                let sObj = randItem(scenarios);
+                let s = rdm(sObj.speed[0], sObj.speed[1]);
+                let t = rdm(sObj.time[0], sObj.time[1]);
+                q = {
+                    ...sObj,
+                    title: "Level 1: 距離計算",
+                    text: `${sObj.name}的速率是 <b>${s} 公里/時</b>，<br>持續移動了 <b>${t} 小時</b>。<br>請問移動了多遠？`,
+                    ans: s * t,
+                    unit: "公里",
+                    opts: genOpts(s*t, 50)
+                };
+            }
+            else if(type === 2) { // 時間 (Dist / Speed)
+                const scenarios = [
+                    { name: "外送員", emoji: "🛵", speed: [400, 600], dist: [2000, 6000], scene: "scene-road" },
+                    { name: "騎腳踏車", emoji: "🚲", speed: [200, 300], dist: [1000, 3000], scene: "scene-nature" },
+                    { name: "聲音", emoji: "🔊", speed: [340, 340], dist: [1020, 3400], scene: "scene-sky" },
+                    { name: "遊艇", emoji: "🚤", speed: [50, 80], dist: [200, 600], scene: "scene-water" }
+                ];
+                let sObj = randItem(scenarios);
+                let speed = rdm(sObj.speed[0], sObj.speed[1]);
+                // 確保整除
+                let timeAns = rdm(5, 15);
+                let dist = speed * timeAns;
+                q = {
+                    ...sObj,
+                    title: "Level 2: 時間計算",
+                    text: `${sObj.name}要移動 <b>${dist} 公尺</b>，<br>速率是 <b>${speed} 公尺/分</b>。<br>請問需要幾分鐘？`,
+                    ans: timeAns,
+                    unit: "分鐘",
+                    opts: genOpts(timeAns, 3)
+                };
+            }
+            else if(type === 3) { // 速率 (Dist / Time)
+                const scenarios = [
+                    { name: "烏龜", emoji: "🐢", unit: "cm/s", scene: "scene-nature" }, 
+                    { name: "跑車", emoji: "🏎️", unit: "m/s", scene: "scene-road" },
+                    { name: "人造衛星", emoji: "🛰️", unit: "km/s", scene: "scene-sky" }
+                ];
+                let sObj = randItem(scenarios);
+                let time = rdm(5, 20); 
+                let speed = rdm(10, 50); // 這是答案
+                let dist = speed * time;
+                q = {
+                    ...sObj,
+                    title: "Level 3: 速率計算",
+                    text: `${sObj.name}移動了 <b>${dist}</b> (距離)，<br>花了 <b>${time} 秒</b>。<br>請問速率是多少？`,
+                    ans: speed,
+                    unit: sObj.unit,
+                    opts: genOpts(speed, 5)
+                };
+            }
+            else if(type === 4) { // 追趕
+                const scenarios = [
+                    { ch1: "小偷", ch2: "警察", emoji: "🚓", scene: "scene-road" },
+                    { ch1: "烏龜", ch2: "兔子", emoji: "🐇", scene: "scene-nature" },
+                    { ch1: "弟弟", ch2: "哥哥", emoji: "🏃", scene: "scene-track" }
+                ];
+                let sObj = randItem(scenarios);
+                let vSlow = rdm(50, 100);
+                let diff = rdm(20, 50);
+                let vFast = vSlow + diff;
+                
+                let leadTime = rdm(2, 6);
+                // 確保答案是整數: 追趕時間 = (vSlow * leadTime) / (vFast - vSlow)
+                // 讓 (vSlow * leadTime) 能被 (vFast - vSlow) 整除
+                // 反向設計：先決定追趕時間 Ans
+                let catchTime = rdm(4, 10);
+                let distGap = catchTime * diff; // 這是需要的距離差
+                // 重新調整 leadTime (有時候會變成小數，這裡簡化邏輯，直接給距離差的敘述可能更好，但為了維持原題型...)
+                // 我們改題目敘述：弟弟先跑了 X 公尺 (distGap)
+                
+                q = {
+                    ...sObj,
+                    emoji: sObj.emoji,
+                    title: "Level 4: 追趕問題",
+                    text: `${sObj.ch1}分速 ${vSlow}m，${sObj.ch2}分速 ${vFast}m。<br>${sObj.ch1}已經先跑了 <b>${distGap} 公尺</b>。<br>${sObj.ch2}幾分鐘後追上？`,
+                    ans: catchTime,
+                    unit: "分鐘",
+                    scene: sObj.scene,
+                    opts: genOpts(catchTime, 2)
+                };
+            }
+
+            gameState.currentQ = q;
+            renderQuestion(q);
+        }
+
+        function genOpts(ans, variance) {
+            let set = new Set([ans]);
+            let safeGuard = 0;
+            while(set.size < 4 && safeGuard < 50) {
+                let diff = (Math.floor(Math.random() * (variance * 2)) - variance);
+                let fake = ans + diff;
+                if(fake > 0 && fake !== ans) set.add(fake);
+                safeGuard++;
+            }
+            // 如果生不出來，強制加數字
+            while(set.size < 4) {
+                set.add(ans + set.size + 1);
+            }
+            return Array.from(set).sort(() => Math.random()-0.5);
+        }
+
+        function renderQuestion(q) {
+            // 設定場景背景
+            const sceneEl = document.getElementById('scene-bg');
+            sceneEl.className = 'scenario-card ' + (q.scene || 'scene-nature');
+            
+            document.getElementById('q-emoji').textContent = q.emoji;
+            document.getElementById('q-title').textContent = q.title;
+            document.getElementById('q-text').innerHTML = q.text;
+            document.getElementById('hud-score').textContent = Math.floor(gameState.score);
+
+            const box = document.getElementById('q-options');
+            box.innerHTML = '';
+            q.opts.forEach(opt => {
+                let btn = document.createElement('div');
+                btn.className = 'option-card';
+                btn.innerHTML = `${opt} <small>${q.unit}</small>`;
+                btn.onclick = () => checkAns(opt);
+                box.appendChild(btn);
+            });
+        }
+
+        function checkAns(val) {
+            if(val === gameState.currentQ.ans) {
+                // 答對邏輯
+                gameState.combo++;
+                
+                let base = 100;
+                if(gameState.difficulty === 'hard') base = 150;
+                if(gameState.difficulty === 'easy') base = 80;
+                
+                // Combo 加成：每個 Combo 增加 10% 分數
+                let multiplier = 1 + (gameState.combo * 0.1);
+                gameState.score += (base * multiplier);
+                
+                updateComboUI();
+                generateNextQuestion();
+            } else {
+                // 答錯邏輯
+                gameState.combo = 0; // 重置 Combo
+                updateComboUI();
+                
+                gameState.time -= 10;
+                
+                // --- 這裡是你要求的修改：顯示正確答案 ---
+                alert(`❌ 答錯了！\n正確答案是：${gameState.currentQ.ans} ${gameState.currentQ.unit}\n\nCombo 中斷，時間 -10 秒！`);
+                
+                updateTimerUI();
+            }
+        }
+
+        function endGame() {
+            clearInterval(gameState.timerId);
+            switchScreen('screen-result');
+            
+            let finalScore = Math.floor(gameState.score);
+            document.getElementById('final-score').textContent = finalScore;
+            
+            // 計算星級 (1-3星)
+            let stars = 1;
+            if(finalScore > 800) stars = 2;
+            if(finalScore > 1500) stars = 3;
+            
+            const starContainer = document.getElementById('result-stars');
+            starContainer.innerHTML = '';
+            for(let i=0; i<3; i++) {
+                let span = document.createElement('span');
+                span.textContent = '★';
+                if(i < stars) span.className = 'filled';
+                starContainer.appendChild(span);
+            }
+
+            let msg = "";
+            if(stars === 3) msg = "太神啦！你是數學超人！🏆";
+            else if(stars === 2) msg = "很棒喔！再一點點就滿分了！✨";
+            else msg = "再接再厲，下次會更好！💪";
+            document.getElementById('feedback-msg').textContent = msg;
+
+            saveScore(gameState.name, finalScore);
+            renderLeaderboard('result-leaderboard');
+        }
+
+        function saveScore(name, score) {
+            let scores = JSON.parse(localStorage.getItem('jessieMathSpeedScores') || '[]');
+            scores.push({ name: name, score: score, date: new Date().toLocaleDateString() });
+            scores.sort((a, b) => b.score - a.score);
+            scores = scores.slice(0, 5);
+            localStorage.setItem('jessieMathSpeedScores', JSON.stringify(scores));
+        }
+
+        function renderLeaderboard(tableId) {
+            const table = document.getElementById(tableId);
+            if(!table) return;
+            const scores = JSON.parse(localStorage.getItem('jessieMathSpeedScores') || '[]');
+            let html = `<tr><th>排名</th><th>名字</th><th>分數</th></tr>`;
+            if(scores.length === 0) {
+                html += `<tr><td colspan="3" style="text-align:center; color:#999;">目前還沒有紀錄</td></tr>`;
+            } else {
+                scores.forEach((s, index) => {
+                    let rankClass = index === 0 ? 'rank-1' : (index === 1 ? 'rank-2' : (index === 2 ? 'rank-3' : ''));
+                    let rankIcon = index === 0 ? '🥇' : (index === 1 ? '🥈' : (index === 2 ? '🥉' : index + 1));
+                    html += `<tr class="${rankClass}"><td>${rankIcon}</td><td>${s.name}</td><td>${s.score}</td></tr>`;
+                });
+            }
+            table.innerHTML = html;
+        }
+
+        renderLeaderboard('login-leaderboard');
+    </script>
+</body>
+</html>
